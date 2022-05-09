@@ -24,7 +24,7 @@ async function run() {
     app.get("/product", async (req, res) => {
       const email = req.query.email;
       if (email) {
-        console.log(email);
+        // console.log(email);
         const query = { email: email };
         const cursor = productCollection.find(query);
         const products = await cursor.toArray();
@@ -43,6 +43,7 @@ async function run() {
       const product = await productCollection.findOne(query);
       res.send(product);
     });
+
     // PostApi For New Product  add:---------
     app.post("/product", async (req, res) => {
       const newProduct = req.body;
@@ -54,6 +55,25 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await productCollection.deleteOne(query);
+      res.send(result);
+    });
+    // ///Update Api:---------
+
+    app.put("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const updateProduct = req.body;
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          quantity: updateProduct.quantity,
+        },
+      };
+      const result = await productCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
       res.send(result);
     });
   } finally {
