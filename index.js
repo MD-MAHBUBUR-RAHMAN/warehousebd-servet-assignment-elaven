@@ -22,10 +22,19 @@ async function run() {
     const productCollection = client.db("warehouse").collection("product");
     // GetApi For All product:-----
     app.get("/product", async (req, res) => {
-      const query = {};
-      const cursor = productCollection.find(query);
-      const products = await cursor.toArray();
-      res.send(products);
+      const email = req.query.email;
+      if (email) {
+        console.log(email);
+        const query = { email: email };
+        const cursor = productCollection.find(query);
+        const products = await cursor.toArray();
+        res.send(products);
+      } else {
+        const query = {};
+        const cursor = productCollection.find(query);
+        const products = await cursor.toArray();
+        res.send(products);
+      }
     });
     // getApi For Single Product:----
     app.get("/product/:id", async (req, res) => {
